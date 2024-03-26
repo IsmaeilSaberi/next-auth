@@ -1,7 +1,10 @@
 "use client";
 import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 const SignOut = () => {
+  const { data: session, status } = useSession();
+  console.log(session);
   return (
     <div>
       <button
