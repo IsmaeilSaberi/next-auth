@@ -1,13 +1,14 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { FcGoogle } from "react-icons/fc";
 import { IoEyeOutline } from "react-icons/io5";
-import { FaGithub } from "react-icons/fa";
+import { LuAtSign } from "react-icons/lu";
+import { CiUser } from "react-icons/ci";
 import { useState, useRef } from "react";
 
 const Register = () => {
   const [passDisplay, setpassDisplay] = useState(-1);
+  const [repassDisplay, setrepassDisplay] = useState(-1);
   return (
     <section className="mt-2">
       <div className="container h-full px-6 py-10">
@@ -22,13 +23,23 @@ const Register = () => {
             />
           </div>
           <div className="md:w-8/12 lg:ml-6 lg:w-5/12">
+            <h1 className="text-center font-bold mb-4">REGISTER</h1>
             <form className="flex flex-col gap-4">
-              <div className="p-2 bg-[#e8f0fe] flex rounded-md border-2 border-blue-300 focus:border-blue-600">
+              <div className="p-2 bg-[#e8f0fe] flex justify-between rounded-md border-2 border-blue-300 focus:border-blue-600">
                 <input
                   className="outline-none bg-[#e8f0fe]"
                   type="email"
-                  placeholder="email"
+                  placeholder="Email"
                 ></input>
+                <LuAtSign className="text-lg text-gray-400" />
+              </div>
+              <div className="p-2 bg-[#e8f0fe] flex justify-between rounded-md border-2 border-blue-300 focus:border-blue-600">
+                <input
+                  className="outline-none bg-[#e8f0fe]"
+                  type="text"
+                  placeholder="Username"
+                ></input>
+                <CiUser className="text-lg text-gray-400" />
               </div>
               <div className="p-2 bg-[#e8f0fe] flex justify-between rounded-md border-2 border-blue-300 focus:border-blue-600">
                 <input
@@ -41,7 +52,17 @@ const Register = () => {
                   className="text-lg cursor-pointer text-gray-400"
                 />
               </div>
-
+              <div className="p-2 bg-[#e8f0fe] flex justify-between rounded-md border-2 border-blue-300 focus:border-blue-600">
+                <input
+                  className="outline-none bg-[#e8f0fe]"
+                  type={repassDisplay == -1 ? "password" : "text"}
+                  placeholder="RePassword"
+                ></input>
+                <IoEyeOutline
+                  onClick={() => setrepassDisplay(repassDisplay * -1)}
+                  className="text-lg cursor-pointer text-gray-400"
+                />
+              </div>
               <div className="mb-6 flex gap-2 flex-col md:flex-row items-center justify-between">
                 <div className="flex gap-1 justify-center items-center">
                   <input
@@ -71,20 +92,6 @@ const Register = () => {
                   Sign up
                 </button>
               </div>
-
-              <div className="my-1 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300">
-                <p className="mx-4 mb-0 text-center font-semibold dark:text-neutral-200">
-                  OR
-                </p>
-              </div>
-              <button className="flex gap-2 justify-center items-center bg-white text-center border-2 border-gray-500 w-full p-2 rounded text-black transition-all duration-200 hover:bg-gray-300 ">
-                <FcGoogle className="text-2xl" />{" "}
-                <span>Continue with Google</span>
-              </button>
-              <button className="flex gap-2 justify-center items-center bg-gray-500 text-center w-full p-2 rounded text-white transition-all duration-200 hover:bg-gray-800 ">
-                <FaGithub className="text-2xl" />{" "}
-                <span>Continue with Github</span>
-              </button>
             </form>
           </div>
         </div>
