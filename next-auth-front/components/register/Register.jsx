@@ -5,10 +5,34 @@ import { IoEyeOutline } from "react-icons/io5";
 import { LuAtSign } from "react-icons/lu";
 import { CiUser } from "react-icons/ci";
 import { useState, useRef } from "react";
+import axios from "axios";
 
 const Register = () => {
   const [passDisplay, setpassDisplay] = useState(-1);
   const [repassDisplay, setrepassDisplay] = useState(-1);
+
+  const emailRef = useRef();
+  const usernameRef = useRef();
+  const passwordRef = useRef();
+
+  const userCreator = (e) => {
+    e.preventDefault();
+
+    const formData = {
+      email: emailRef.current.value,
+      username: usernameRef.current.value,
+      password: passwordRef.current.value,
+    };
+    console.log(formData);
+
+    axios
+      .post(`/api/user/create-user`, formData)
+      .then((data) => {
+        console.log(data.data);
+      })
+      .catch((err) => console.log(err.response.data));
+  };
+
   return (
     <section className="mt-2">
       <div className="container h-full px-6 py-10">
@@ -24,11 +48,12 @@ const Register = () => {
           </div>
           <div className="md:w-8/12 lg:ml-6 lg:w-5/12">
             <h1 className="text-center font-bold mb-4">REGISTER</h1>
-            <form className="flex flex-col gap-4">
+            <form onSubmit={userCreator} className="flex flex-col gap-4">
               <div className="p-2 bg-[#e8f0fe] flex justify-between rounded-md border-2 border-blue-300 focus:border-blue-600">
                 <input
                   className="outline-none bg-[#e8f0fe]"
                   type="email"
+                  ref={emailRef}
                   placeholder="Email"
                 ></input>
                 <LuAtSign className="text-lg text-gray-400" />
@@ -37,6 +62,7 @@ const Register = () => {
                 <input
                   className="outline-none bg-[#e8f0fe]"
                   type="text"
+                  ref={usernameRef}
                   placeholder="Username"
                 ></input>
                 <CiUser className="text-lg text-gray-400" />
@@ -46,6 +72,7 @@ const Register = () => {
                   className="outline-none bg-[#e8f0fe]"
                   type={passDisplay == -1 ? "password" : "text"}
                   placeholder="Password"
+                  ref={passwordRef}
                 ></input>
                 <IoEyeOutline
                   onClick={() => setpassDisplay(passDisplay * -1)}
