@@ -82,7 +82,14 @@ const Login = () => {
                   OR
                 </p>
               </div>
-              <button className="flex gap-2 justify-center items-center bg-white text-center border-2 border-gray-500 w-full p-2 rounded text-black transition-all duration-200 hover:bg-gray-300 ">
+              <button
+                onClick={() =>
+                  signIn("google", {
+                    callbackUrl: `${process.env.NEXTAUTH_URL}/account`,
+                  })
+                }
+                className="flex gap-2 justify-center items-center bg-white text-center border-2 border-gray-500 w-full p-2 rounded text-black transition-all duration-200 hover:bg-gray-300 "
+              >
                 <FcGoogle className="text-2xl" />{" "}
                 <span>Continue with Google</span>
               </button>
