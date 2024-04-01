@@ -6,6 +6,7 @@ import { LuAtSign } from "react-icons/lu";
 import { CiUser } from "react-icons/ci";
 import { useState, useRef } from "react";
 import axios from "axios";
+import { signIn } from "next-auth/react";
 
 const Register = () => {
   const [passDisplay, setpassDisplay] = useState(-1);
@@ -15,6 +16,14 @@ const Register = () => {
   const usernameRef = useRef();
   const passwordRef = useRef();
 
+  const signIner = async () => {
+    await signIn("credentials", {
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+      callbackUrl: "/account",
+    });
+  };
+
   const userCreator = (e) => {
     e.preventDefault();
 
@@ -23,12 +32,12 @@ const Register = () => {
       username: usernameRef.current.value,
       password: passwordRef.current.value,
     };
-    console.log(formData);
 
     axios
       .post(`/api/user/create-user`, formData)
       .then((data) => {
         console.log(data.data);
+        signIner();
       })
       .catch((err) => console.log(err.response.data));
   };

@@ -11,6 +11,20 @@ import { signIn } from "next-auth/react";
 
 const Login = () => {
   const [passDisplay, setpassDisplay] = useState(-1);
+
+  const emailRef = useRef();
+  const passwordRef = useRef();
+
+  const credentilasLogin = async (e) => {
+    e.preventDefault();
+    const status = await signIn("credentials", {
+      email: emailRef.current.value,
+      password: passwordRef.current.value,
+      callbackUrl: "/account",
+    });
+    console.log(status);
+  };
+
   return (
     <section className="mt-2">
       <div className="container h-full px-6 py-10">
@@ -26,12 +40,13 @@ const Login = () => {
           </div>
           <div className="md:w-8/12 lg:ml-6 lg:w-5/12">
             <h1 className="text-center font-bold mb-4">SIGN IN</h1>
-            <form className="flex flex-col gap-4">
+            <form onSubmit={credentilasLogin} className="flex flex-col gap-4">
               <div className="p-2 bg-[#e8f0fe] flex justify-between rounded-md border-2 border-blue-300 focus:border-blue-600">
                 <input
                   className="outline-none bg-[#e8f0fe]"
                   type="email"
                   placeholder="Email"
+                  ref={emailRef}
                 ></input>
                 <LuAtSign className="text-lg text-gray-400" />
               </div>
@@ -40,6 +55,7 @@ const Login = () => {
                   className="outline-none bg-[#e8f0fe]"
                   type={passDisplay == -1 ? "password" : "text"}
                   placeholder="Password"
+                  ref={passwordRef}
                 ></input>
                 <IoEyeOutline
                   onClick={() => setpassDisplay(passDisplay * -1)}
