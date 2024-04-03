@@ -7,7 +7,7 @@ export const POST = async (request: any) => {
   const { email, password } = await request.json();
   await connect();
 
-  const existingUser = await User.findOne(email);
+  const existingUser = await User.findOne({ email });
 
   if (existingUser) {
     return new NextResponse("Email already in use", { status: 400 });
