@@ -1,0 +1,58 @@
+import User from "@/models/User";
+import connect from "@/utils/db";
+import crypto from "crypto";
+import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
+
+export const POST = async (request: any) => {
+  const { email } = await request.json();
+  await connect();
+
+  const existingUser = await User.findOne({ email });
+
+  if (!existingUser) {
+    return new NextResponse("Email doesn't exist!", { status: 400 });
+  }
+
+  const resetToken = crypto.randomBytes(20).toString("hex");
+  const passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  const passwordResetExpires = Date.now() + 360000;
+
+  existingUser.resetToken = passwordResetToken;
+  existingUser.resetTokenExpiry = passwordResetExpires;
+  const resetUrl = `${process.env.NEXTAUTH_URL}/${resetToken}`;
+  //SENDING SECURITY EMAIL TO USER ACCOUNT
+  const MAIL_HOST = process.env.MAIL_HOST;
+  const MAIL_PORT = process.env.MAIL_PORT;
+  const MAIL_USER = process.env.MAIL_USER;
+  const MAIL_PASSWORD = process.env.MAIL_PASSWORD;
+  const MAIL_MAIN_ADDRESS = process.env.MAIL_MAIN_ADDRESS;
+
+  const transporter = nodemailer.createTransport({
+    host: MAIL_HOST,
+    port: MAIL_PORT,
+    tls: true,
+    auth: {
+      user: MAIL_USER,
+      pass: MAIL_PASSWORD,
+    },
+  });
+  transporter
+    .sendMail({
+      from: MAIL_MAIN_ADDRESS,
+      to: email,
+      subject: "Changing password by clicking on the following url!",
+      html: `<html><head><style>strong{color: rgb(0, 81, 255);}h1{font-size: large;}</style></head><body><h1>Changing your password</h1><div>Link :<strong>${resetUrl}</strong></div></body></html>`,
+    })
+    .then((d) => {
+      res.status(200).json({ msg: "ثبت نام موفقیت آمیز بود!", auth: token });
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(400).json({ msg: "خطا در ثبت نام!", errorMessage: error });
+    });
+};
