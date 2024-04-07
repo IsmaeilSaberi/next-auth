@@ -24,7 +24,7 @@ export const POST = async (request: any) => {
 
   existingUser.resetToken = passwordResetToken;
   existingUser.resetTokenExpiry = passwordResetExpires;
-  const resetUrl = `${process.env.NEXTAUTH_URL}/${resetToken}`;
+  const resetUrl = `${process.env.NEXTAUTH_URL}/rest-password/${resetToken}`;
   //SENDING SECURITY EMAIL TO USER ACCOUNT
   const MAIL_HOST = process.env.MAIL_HOST;
   const MAIL_PORT = process.env.MAIL_PORT;
@@ -48,11 +48,26 @@ export const POST = async (request: any) => {
       subject: "Changing password by clicking on the following url!",
       html: `<html><head><style>strong{color: rgb(0, 81, 255);}h1{font-size: large;}</style></head><body><h1>Changing your password</h1><div>Link :<strong>${resetUrl}</strong></div></body></html>`,
     })
-    .then((d) => {
-      res.status(200).json({ msg: "ثبت نام موفقیت آمیز بود!", auth: token });
+    .then(() => {
+      return new NextResponse("Reset password email is sent.", { status: 200 });
     })
-    .catch((error) => {
-      console.log(error);
-      res.status(400).json({ msg: "خطا در ثبت نام!", errorMessage: error });
+    .catch(async (error: any) => {
+      existingUser.resetToken = undefined;
+      existingUser.resetTokenExpiry = undefined;
+      await existingUser.save();
+
+      return new NextResponse("Failed sending email, Try again!", {
+        status: 400,
+      });
     });
+
+  try {
+    await existingUser.save();
+
+    return new NextResponse("Email is sent for resetting password!", {
+      status: 200,
+    });
+  } catch (error: any) {
+    return new NextResponse(error, { status: 200 });
+  }
 };
