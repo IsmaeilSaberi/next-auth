@@ -24,7 +24,7 @@ export const POST = async (request: any) => {
 
   existingUser.resetToken = passwordResetToken;
   existingUser.resetTokenExpiry = passwordResetExpires;
-  const resetUrl = `${process.env.NEXTAUTH_URL}/rest-password/${resetToken}`;
+  const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password/${resetToken}`;
   //SENDING SECURITY EMAIL TO USER ACCOUNT
   const MAIL_HOST = process.env.MAIL_HOST;
   const MAIL_PORT = process.env.MAIL_PORT;

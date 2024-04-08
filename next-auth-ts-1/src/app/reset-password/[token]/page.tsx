@@ -5,8 +5,6 @@ import { signIn, useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 
 const ResetPassword = ({ params }: any) => {
-  console.log(params.token);
-
   const router = useRouter();
   const [error, setError] = useState("");
   const [verified, setVerified] = useState(false);
@@ -55,31 +53,32 @@ const ResetPassword = ({ params }: any) => {
     e.preventDefault();
     const password = e.target[0].value;
 
-    // try {
-    //   const res = await fetch("/api/reset-password", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       password,
-    //     }),
-    //   });
+    try {
+      const res = await fetch("/api/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          password,
+          email: user?.email,
+        }),
+      });
 
-    //   if (res.status == 400) {
-    //     setError("User with this email is not registered!");
-    //   }
-    //   if (res.status == 200) {
-    //     setError("");
-    //     router.push("/login");
-    //   }
-    // } catch (error) {
-    //   setError("Error, try again");
-    //   console.log(error);
-    // }
+      if (res.status == 400) {
+        setError("Something went wrong, try again!");
+      }
+      if (res.status == 200) {
+        setError("");
+        router.push("/login");
+      }
+    } catch (error) {
+      setError("Error, try again");
+      console.log(error);
+    }
   };
 
-  if (sessionStatus === "loading") {
+  if (sessionStatus === "loading" || !verified) {
     return <h1>Loading... </h1>;
   }
 
